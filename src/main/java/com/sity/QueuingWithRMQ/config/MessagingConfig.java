@@ -5,16 +5,19 @@ import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class MessagingConfig {
 
-
-    public static final String QUEUE = "test";
-    public static final String EXCHANGE = "test.requests";
-    public static final String ROUTING_KEY = "testcallback.#";
+    @Value("${rabbitmq.queue.name}")
+    private String QUEUE;
+    @Value("${rabbitmq.exchange.name}")
+    private   String EXCHANGE;
+    @Value("${rabbitmq.routingKey.name}")
+    private String ROUTING_KEY;
     @Bean
     public Queue queue(){
         return new Queue(QUEUE);

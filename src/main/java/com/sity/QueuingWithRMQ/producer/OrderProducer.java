@@ -5,6 +5,7 @@ import com.sity.QueuingWithRMQ.dto.Order;
 import com.sity.QueuingWithRMQ.dto.OrderStatus;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -14,6 +15,10 @@ import java.util.UUID;
 public class OrderProducer {
     @Autowired
     public RabbitTemplate template;
+    @Value("${rabbitmq.exchange.name}")
+    private String EXCHANGE;
+    @Value("${rabbitmq.routingKey.name}")
+    private String ROUTING_KEY;
 
     @PostMapping("/{restrauntName}")
     public String bookOrder(@RequestBody Order order, @PathVariable String restrauntName) {
@@ -21,7 +26,7 @@ public class OrderProducer {
         // restraunt Service
         // Payment Service
         OrderStatus orderStatus = new OrderStatus(order, "PROCESS", "order placed successfuly" + restrauntName);
-        template.convertAndSend(MessagingConfig.EXCHANGE, MessagingConfig.ROUTING_KEY, orderStatus);
+        template.convertAndSend(EXCHANGE, ROUTING_KEY, orderStatus);
         return "Success !!";
     }
 }
